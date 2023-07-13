@@ -10,11 +10,11 @@ void reverse(std::vector<T>& arr) {
 
 int main()
 {
-    byte_array original{'a','a','a','b','b','b','c','c','c','c','d','\0'};
+    byte_array original{1,1,1,0,1,1,1,0,1,1,1,0,3,4,5,0,3,4,5,0,0,0,0,0};
     byte_array compressed;
     BStream in(original);
     BStream out(compressed);
-    Encode(in,out);
-    Decode(out,in);
+    Encode_p(in,out);
+    Decode_p(out,in);
     return 0;
 }

@@ -4,6 +4,7 @@
 
 using byte = unsigned char;
 using byte_array = std::vector<byte>;
+using std::vector;
 
 class IInputStream {
    public:
@@ -66,3 +67,7 @@ class BStream : public IOutputStream, public IInputStream {
 void Encode(IInputStream &original, IOutputStream &compressed);
 
 void Decode(IInputStream &compressed, IOutputStream &original);
+
+void Encode_p(IInputStream &original, IOutputStream &compressed);
+
+void Decode_p(IInputStream &compressed, IOutputStream &original);
