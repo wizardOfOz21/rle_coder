@@ -69,15 +69,26 @@ void Encode_p(IInputStream &original, IOutputStream &compressed) {
             };
             ++count;
         }
-        compressed.Write(count);
+        compressed.Write(count >> 8);
+        compressed.Write(count & 255);
         write_pixel(compressed, value);
     }
     compressed.Write(0);
 };
 
+bool read_int(IInputStream &src, int &res, int count) {
+    res = 0;
+    for (int i = 0; i < count; ++i) {
+        byte b = 0;
+        if (!src.Read(b)) return false;
+        res += b << 8 * (count - i - 1);
+    }
+    return true;
+}
+
 void Decode_p(IInputStream &compressed, IOutputStream &original) {
-    byte count = 0;
-    compressed.Read(count);
+    int count = 0;
+    read_int(compressed, count, 2);
     while (count != 0) {
         byte_array value(PIXEL_SIZE);
         read_pixel(compressed, value);
@@ -85,7 +96,7 @@ void Decode_p(IInputStream &compressed, IOutputStream &original) {
         for (int i = 0; i < count; ++i) {
             write_pixel(original, value);
         }
-        compressed.Read(count);
+        read_int(compressed, count, 2);
     }
     write_pixel(original, ESCAPE_PIXEL);
 };
