@@ -104,7 +104,7 @@ class CBStream : public IOutputStream, public IInputStream {
     int get_size() const { return size; }
 
     ~CBStream() {
-        delete[] buffer;
+        free(buffer);
     }
 };
 

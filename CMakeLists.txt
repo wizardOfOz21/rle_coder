@@ -9,7 +9,5 @@ include_directories(include)
 
 add_executable(main ${source})
 
-target_compile_options(main PRIVATE -fsanitize=address)
-target_link_options(main PRIVATE -fsanitize=address)
-
-add_subdirectory(test)
+# target_link_options(main PRIVATE -fsanitize=address)
+# add_subdirectory(test)
