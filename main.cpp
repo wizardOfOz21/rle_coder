@@ -1,4 +1,7 @@
+#include <sstream>
+#include <iostream>
 #include "rle.hpp"
+#include <time.h> 
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
@@ -13,42 +16,76 @@ void reverse(std::vector<T>& arr) {
     }
 }
 
+int test(byte* data, int length, float& compr_) {
+    int decomp_length;
+    int comp_length;
+    byte* compressed = Encode(data, length, comp_length);
+    byte* original = Decode(compressed, comp_length, decomp_length);
+
+    compr_ = (float)comp_length / length;
+    return length != decomp_length; 
+}
+
+int test_mp4(const std::string& filename_prefix, int frames, float& compr_,
+double& encode_time, double& decode_time) {
+    encode_time = decode_time = 0;
+    byte** compr_frames = new byte*[frames];
+    vector<int> orig_lengths(frames);
+    vector<int> compr_lengths(frames);
+    /////Encoding/////
+    for (int i = 0; i < frames; ++i) {
+        std::stringstream name;
+        name << filename_prefix;
+        if (i < 10) name << "00" << i;
+        else if (i < 100) name << "0" << i;
+        else name << i;
+        name << ".jpg";
+        int width, height, cnt;
+        byte* data = stbi_load(name.str().c_str(), &width, &height, &cnt, 0);
+        orig_lengths[i] = width*height*cnt; 
+        int comp_length;
+        clock_t start = clock();
+            byte* compressed = Encode(data, orig_lengths[i], comp_length);
+        clock_t end = clock();
+        encode_time += (double)(end - start) / CLOCKS_PER_SEC;
+        compr_frames[i] = compressed;
+        compr_lengths[i] = comp_length;
+    }
+    //////////////////
+    /////Decoding/////
+
+    float acc = 0;
+    for (int i = 0; i < frames; ++i) {
+        int decomp_length;
+        clock_t start = clock();
+            byte* decompressed = Decode(compr_frames[i], compr_lengths[i], decomp_length);
+        clock_t end = clock();
+        decode_time += (double)(end - start) / CLOCKS_PER_SEC;
+        if (decomp_length != orig_lengths[i]) {
+            std::cout << "Error" << std::endl;
+            return 1;
+        }
+        float compr_ =  (float)compr_lengths[i]/orig_lengths[i];
+        // std::cout << compr_ << std::endl;
+        acc += compr_;
+    }
+
+    //////////////////
+    compr_ = acc/frames;
+    return 0;
+}
+
 int main() {
-    std::string str = "../11.png";
-    int width, height, cnt;
-    byte* data = stbi_load(str.c_str(), &width, &height, &cnt, 0);
-    // byte_array original(data, data+width*height*cnt);
 
-    // original.push_back(0);
-    // original.push_back(0);
-    // original.push_back(0);
-    // original.push_back(0);
-    
-    std::cout << width*height*cnt << std::endl;
+    float compr_ = 0;
+    double encode_time = 0;
+    double decode_time = 0;
+    if (!test_mp4("../imgs/NeuroMatrix_", 240, compr_, encode_time, decode_time)) 
+    std::cout << "________________________\n" << compr_ << " | " << encode_time 
+    << " | " << decode_time <<  std::endl;
+    if (!test_mp4("../imgs/Map_", 133, compr_, encode_time, decode_time)) 
+    std::cout << "________________________\n" << compr_ << " | " << encode_time 
+    << " | " << decode_time <<  std::endl;
 
-    // byte_array original{1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0,
-    //                     3, 4, 5, 0, 3, 4, 5, 0, 0, 0, 0, 0};
-
-    // byte_array compressed;
-    // byte_array res;
-    // BStream in(original);
-    // BStream out(compressed);
-    // BStream t(res);
-    CBStream in(data, width*height*cnt);
-    CBStream out(0);
-    CBStream t(0);
-    in.Write(0);
-    in.Write(0);
-    in.Write(0);
-    in.Write(0);
-    Encode_p(in, out);
-    // std::cout << out.get_buffer().size() << std::endl;
-    std::cout << out.get_size() << std::endl;
-    Decode_p(out, t);
-    // std::cout << t.get_buffer().size() << std::endl;
-    std::cout << t.get_size() << std::endl;
-
-    // stbi_write_png("../copy.png", width, height,
-    //                          cnt, t.get_buffer(), width * cnt);
     return 0;
 }
