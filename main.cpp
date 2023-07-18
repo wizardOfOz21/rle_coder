@@ -19,8 +19,8 @@ void reverse(std::vector<T>& arr) {
 int test(byte* data, int length, float& compr_) {
     byte_array compressed;
     byte_array decompressed;
-    Encode(data, length, compressed);
-    Decode(compressed.data(), compressed.size(), decompressed);
+    encode1(data, length, compressed);
+    decode1(compressed.data(), compressed.size(), decompressed);
 
     compr_ = (float)compressed.size() / length;
     return length != decompressed.size(); 
@@ -45,7 +45,7 @@ double& encode_time, double& decode_time) {
         orig_lengths[i] = width*height*cnt; 
         byte_array compressed;
         clock_t start = clock();
-            Encode1(data, orig_lengths[i], compressed);
+            encode2(data, orig_lengths[i], compressed);
         clock_t end = clock();
         encode_time += (double)(end - start) / CLOCKS_PER_SEC;
         compr_frames[i] = compressed;
@@ -58,7 +58,7 @@ double& encode_time, double& decode_time) {
     for (int i = 0; i < frames; ++i) {
         byte_array decompressed; 
         clock_t start = clock();
-            Decode1(compr_frames[i].data(), compr_lengths[i], decompressed);
+            decode2(compr_frames[i].data(), compr_lengths[i], decompressed);
         clock_t end = clock();
         decode_time += (double)(end - start) / CLOCKS_PER_SEC;
         if (decompressed.size() != orig_lengths[i]) {
@@ -77,41 +77,15 @@ double& encode_time, double& decode_time) {
 
 int main() {
 
-    // float compr_ = 0;
-    // double encode_time = 0;
-    // double decode_time = 0;
-    // if (!test_mp4("../imgs/NeuroMatrix_", 240, compr_, encode_time, decode_time)) 
-    // std::cout << "________________________\n" << compr_ << " | " << encode_time 
-    // << " | " << decode_time <<  std::endl;
-    // if (!test_mp4("../imgs/Map_", 133, compr_, encode_time, decode_time)) 
-    // std::cout << "________________________\n" << compr_ << " | " << encode_time 
-    // << " | " << decode_time <<  std::endl;
-
-    // std::vector<std::string> tests{"a","aa"};
-
-    // for (std::string test : tests) {
-
-    //     encode((byte*)test3.c_str(), test3.length(), compressed);
-    // }
-    // byte_array compressed;
-
-    // for (char b : compressed) {
-    //     if ('a' <= b && b <= 'z')
-    //         std::cout << (char)b;
-    //     else 
-    //         std::cout << (int)b;
-    // }
-    // std::cout << std::endl;
-
-    // byte_array original;
-
-    // Decode1(compressed.data(), compressed.size(), original);
-
-    // for (int i = 0; i < original.size(); i+=3) {
-    //     for (int j = 0; j < 3; ++j)
-    //         std::cout << int(original[i+j]) << " ";
-    //     std::cout << std::endl;
-    // }
+    float compr_ = 0;
+    double encode_time = 0;
+    double decode_time = 0;
+    if (!test_mp4("../imgs/NeuroMatrix_", 240, compr_, encode_time, decode_time)) 
+    std::cout << "________________________\n" << compr_ << " | " << encode_time 
+    << " | " << decode_time <<  std::endl;
+    if (!test_mp4("../imgs/Map_", 133, compr_, encode_time, decode_time)) 
+    std::cout << "________________________\n" << compr_ << " | " << encode_time 
+    << " | " << decode_time <<  std::endl;
 
     return 0;
 }

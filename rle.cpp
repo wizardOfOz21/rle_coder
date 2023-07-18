@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-const int SYMBOL_SIZE = 1;
+const int SYMBOL_SIZE = 3;
 const int LIMIT_1B = 127;
 const int LIMIT_2B = 32'767;
 
@@ -214,7 +214,6 @@ void decode1(const byte *compressed, int length, byte_array &original) {
         continue;
     }
 };
-
 
 
 // Version with 2 bytes for len and negative lens in direct code;
