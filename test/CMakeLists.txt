@@ -1,11 +1,14 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.14)
 project(rle_test)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(GTEST_ROOT "/Program Files (x86)/googletest-distribution")
 find_package(GTest REQUIRED)
 
-set(test_source main.cpp ../huffman.cpp)
-add_executable(tests ${test_source})
-target_link_libraries(tests GTest::gtest_main)
+add_executable(basic_rle_tests basic.cpp ../rle.cpp)
+target_link_libraries(basic_rle_tests PRIVATE GTest::GTest)
 
-target_compile_options(tests PRIVATE -fsanitize=address)
-target_link_options(tests PRIVATE -fsanitize=address)
+add_executable(ver0_tests version0.cpp ../rle.cpp)
+target_link_libraries(ver0_tests PRIVATE GTest::GTest)

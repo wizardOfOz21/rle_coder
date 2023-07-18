@@ -114,5 +114,12 @@ void Decode(IInputStream &compressed, IOutputStream &original);
 void Encode_p(IInputStream &original, IOutputStream &compressed);
 void Decode_p(IInputStream &compressed, IOutputStream &original);
 
-byte* Encode(const byte* original, int length, int& comp_length);
-byte* Decode(const byte* compressed, int length, int& orig_length);
+
+void encode0(const byte* original, int length, byte_array& compressed);
+void decode0(const byte* compressed, int length, byte_array& original);
+
+void encode1(const byte* original, int length, byte_array& compressed);
+void decode1(const byte* compressed, int length, byte_array& original);
+
+void encode2(const byte* original, int length, byte_array& compressed);
+void decode2(const byte* compressed, int length, byte_array& original);
