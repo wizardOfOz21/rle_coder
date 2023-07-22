@@ -4,7 +4,7 @@ typedef unsigned char word;
 typedef unsigned int uint;
 const uint LIMIT_1B = 127;
 const uint LENGTH_SIZE = 1;
-const uint SYMBOL_SIZE = 1;
+const uint SYMBOL_SIZE = 3;
 
 // Optimal(!) version with 1 word for len and negative lens;
 int equal(const word *a, const word *b, uint count) {

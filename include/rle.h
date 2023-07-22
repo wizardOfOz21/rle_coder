@@ -35,7 +35,7 @@ uint write_seq(word *dest, const word *b, uint count, uint size) {
 
 uint write_nseq(word *dest, const word *src, uint count, uint size) {
     uint l = LIMIT_1B * size;
-    uint i = count;
+    uint i = count*size;
     for (; count > LIMIT_1B; count -= LIMIT_1B, i += LENGTH_SIZE) {
         dest[0] = -LIMIT_1B;
         dest += LENGTH_SIZE;
@@ -92,7 +92,7 @@ void decode0(const word *compressed, int length, word *original) {
 
     while (i < length) {
         const word *current = &compressed[i];
-        int count = current[0];
+        char count = current[0];
         if (count > 0) {
             for (int j = 0; j < count; ++j) {
                 write_bytes(&original[k], &current[LENGTH_SIZE], SYMBOL_SIZE);
