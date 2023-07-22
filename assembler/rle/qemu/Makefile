@@ -17,7 +17,7 @@ LDFLAGS  = -Wl,-Map=test.map  -Wl,-Tqemu.lds
 LDFLAGSD = -Wl,-Map=testd.map -Wl,-Tqemu.lds 
 INC_DIRS = -I../../include -I..
 LIB_DIRS = 
-SOURCES  = ../step4.S
+SOURCES  = ../rle.S
 
 .DEFAULT_GOAL := all
 

@@ -6,11 +6,11 @@
 #include "rle.hpp"
 
 void encode(const byte* original, int length, byte_array& compressed) {
-    encode2(original, length, compressed);
+    encode2<1>(original, length, compressed);
 };
 
 void decode(const byte* compressed, int length, byte_array& original) {
-    decode2(compressed, length, original);
+    decode2<1>(compressed, length, original);
 };
 
 std::string to_str(const byte_array &res) {

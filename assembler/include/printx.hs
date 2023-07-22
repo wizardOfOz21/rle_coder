@@ -73,7 +73,6 @@ skip_text\@:
 #define PRINTF2(Format, Arg1,Arg2) PRINTF2_MACRO Format,Arg1,Arg2
 #define PRINTFL(Format, Arg1) PRINTFL_MACRO Format,Arg1
 
-
 // USAGE in *.S sources:
 // #include "printx.hs"
 // PRINTF("Hello\n")
@@ -182,4 +181,21 @@ skip_text\@:
 	ar7 -=6 with gr7 = gr5;
 	pop ar4,gr4;
 	pop ar5,gr5;
+.endm
+
+/////////////////////////////////////////
+#define PRINTF_VEC(Src, Num) PRINTF_VEC_MACRO Src,Num
+
+.macro PRINTF_VEC_MACRO src,num
+  push ar0, gr0;
+  push gr1;
+  ar0 = \src;
+  gr0 = \num;
+  Loop:
+    gr1 = [ar0++];
+    PRINTF1("%x ",gr1)
+    gr0--;
+    if > goto Loop;
+  pop gr1;
+  pop ar0, gr0;
 .endm
