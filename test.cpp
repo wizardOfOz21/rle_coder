@@ -1,11 +1,14 @@
 #include "rle.h"
 #include <stdio.h>
+#include "time.h"
+
 #define SIZE 400
 word in[SIZE] __attribute__((section(".data.imu1")));
 word out[SIZE] __attribute__((section(".data.imu2")));
 word decomp[SIZE] __attribute__((section(".data.imu3")));
 
 int main() {
+    clock_t begin = clock();
     for (int i = 0; i < SIZE/4; ++i) {
         in[i] = 10;
         in[i+100] = 20;
@@ -28,5 +31,9 @@ int main() {
     for (int i = 0; i < SIZE; ++i) {
         if (in[i] != decomp[i]) printf("Error - %d\n", i);
     }
+    clock_t end = clock();
+    printf("begin = %ld\n", begin);
+    printf("end = %ld\n", end);
+    printf("time = %l\n", end - begin);
     return 0;
 }

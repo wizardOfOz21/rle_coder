@@ -188,14 +188,15 @@ skip_text\@:
 
 .macro PRINTF_VEC_MACRO src,num
   push ar0, gr0;
-  push gr1;
+  push ar1, gr1;
   ar0 = \src;
   gr0 = \num;
-  Loop:
+  Loop\src:
     gr1 = [ar0++];
     PRINTF1("%x ",gr1)
     gr0--;
-    if > goto Loop;
-  pop gr1;
+    if > goto Loop\src;
+  PRINTF("\n")
+  pop ar1, gr1;
   pop ar0, gr0;
 .endm
