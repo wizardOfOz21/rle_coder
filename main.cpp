@@ -5,29 +5,20 @@
 #include <sstream>
 
 #include "rle.hpp"
+#include "practice/modelA.h"
+#include "practice/compressor.h"
+#include "practice/decompressor.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
 
-template <class T>
-void reverse(std::vector<T>& arr) {
-    int n = arr.size();
-    for (int i = 0; i < n / 2; ++i) {
-        std::swap(arr[i], arr[n - 1 - i]);
-    }
-}
-
-int test(byte* data, int length, float& compr_) {
-    // std::ofstream file("../NM", std::ios::binary);
+int test(byte_* data, int length, float& compr_) {
     byte_array compressed;
     byte_array decompressed;
     encode2<1>(data, length, compressed);
-    // std::cout << compressed.size() << std::endl;
-    // for (byte b : compressed) file << b;
     decode2<1>(compressed.data(), compressed.size(), decompressed);
-    // file.close(); 
     compr_ = (float)compressed.size() / length;
     return length != decompressed.size();
 }
@@ -50,7 +41,7 @@ int test_mp4(const std::string& filename_prefix, int frames, float& compr_,
             name << i;
         name << ".jpg";
         int width, height, cnt;
-        byte* data = stbi_load(name.str().c_str(), &width, &height, &cnt, 0);
+        byte_* data = stbi_load(name.str().c_str(), &width, &height, &cnt, 0);
         orig_lengths[i] = width * height * cnt;
         byte_array compressed;
         clock_t start = clock();
@@ -85,51 +76,45 @@ int test_mp4(const std::string& filename_prefix, int frames, float& compr_,
 }
 
 int main() {
-    // float compr_ = 0;
-    // double encode_time = 0;
-    // double decode_time = 0;
-    // if (!test_mp4("../imgs/NeuroMatrix.mp4/NeuroMatrix_", 240, compr_,
-    // encode_time, decode_time)) std::cout << "________________________\n" <<
-    // compr_ << " | " << encode_time
-    // << " | " << decode_time <<  std::endl;
-    // if (!test_mp4("../imgs/Map.mp4/Map_", 133, compr_, encode_time,
-    // decode_time)) std::cout << "________________________\n" << compr_ << " |
-    // " << encode_time
-    // << " | " << decode_time <<  std::endl;
+   // RLE
+    // Reading 
+    std::string input_name = "../imgs/Map_default.jpg";
+    std::string compressed_name = "../imgs/compressed.bin";
+    std::string decompressed_name = "../imgs/Map_origin";
+    int width, height, cnt;
+    byte_* data = stbi_load(input_name.c_str(), &width, &height, &cnt, 0);
 
-    // std::string name = "../imgs/Map_default.jpg";
-    // int width, height, cnt;
-    // byte* data = stbi_load(name.c_str(), &width, &height, &cnt, 0);
-    // float compr = 0;
-    // test(data, width*height*cnt, compr);
-    // std::cout << width*height*cnt << std::endl;
+   // Сompression
+    byte_array compressed;
+    byte_array decompressed;
+    int length = width*height*cnt;
+    encode0<3>(data, length, compressed);   
+    decode0<3>(compressed.data(), compressed.size(), decompressed);
+    float compr_ = (float)compressed.size() / length;
+    std::cout << "RLE-compressed data size: " << 100*compr_ << "%" << std::endl;
 
-    // std::string name = "../imgs/Map_compressed";
-    // byte_array buffer;
-    // std::ifstream file(name);
-    // byte b;
-    // while (file >> b) buffer.push_back(b);
-    // file.close();
-    // float compr;
-    // test(buffer.data(), buffer.size(), compr);
-    // std::cout << compr << std::endl;
+   // Writing
+    std::string rle_name = decompressed_name + "_rle.jpg";
+    stbi_write_jpg(rle_name.data(), width, height, cnt, decompressed.data(), 100);
+   ///
 
-    // std::ifstream nm1("../imgs/NeuroMatrix_example.bin", std::ios::binary);
-    // std::ifstream nm2("../imgs/res3.bin", std::ios::binary);
-    // std::ifstream m1("../imgs/Map_example.bin", std::ios::binary);
-    // std::ifstream m2("../imgs/res2.bin", std::ios::binary);
 
-    // byte b = 0;
-    // while (nm1 >> b) {
-    //     byte clone = 0;
-    //     nm2 >> clone;
-    //     if (b != clone) std::cout << "error" << std::endl; 
-    // }  
-    // while (m1 >> b) {
-    //     byte clone = 0;
-    //     m2 >> clone;
-    //     if (b != clone) std::cout << "error" << std::endl; 
-    // }
+   // Arithmetic coding
+    ifstream input(input_name, std::ios::binary);
+    ofstream output(compressed_name, std::ios::binary);
+    modelA<int, 16, 14> cmodel;
+    compress(input, output, cmodel);
+    input.close();
+    output.close();
+
+    ifstream compressed_(compressed_name, std::ios::binary);
+    std::string arith_name = decompressed_name + "_arith.jpg";
+    ofstream decompressed_(arith_name, std::ios::binary);
+    modelA<int, 16, 14> cmodel_;
+    decompress(compressed_, decompressed_, cmodel_);
+    compressed_.close();
+    decompressed_.close();
+   ///
 
     return 0;
 }

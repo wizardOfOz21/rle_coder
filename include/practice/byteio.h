@@ -1,3 +1,4 @@
+#pragma once
 #ifndef BYTEIO_DOT_H
 #define BYTEIO_DOT_H
 

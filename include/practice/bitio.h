@@ -1,3 +1,4 @@
+#pragma once
 #include "byteio.h"
 
 template<typename OUTPUT>
