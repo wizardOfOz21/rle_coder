@@ -17,7 +17,7 @@ LDFLAGS  = -Wl,-Map=test.map  -Wl,-Tqemu.lds
 LDFLAGSD = -Wl,-Map=testd.map -Wl,-Tqemu.lds 
 INC_DIRS = -I../../include -I..
 LIB_DIRS = 
-SOURCES  = ../rle.cpp ../main.cpp ../test1.S
+SOURCES  = ../main.cpp ../Encode.S ../Encode1.S
 
 .DEFAULT_GOAL := all
 

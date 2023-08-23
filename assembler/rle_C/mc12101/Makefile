@@ -15,9 +15,9 @@ LIBS     =  -lnm6407int -Wl,--whole-archive -lnm6407_io_nmc -lmc12101load_nm -Wl
 LIBSD    =  -lnm6407int -Wl,--whole-archive -lnm6407_io_nmc -lmc12101load_nm -lmc12101_stub_nmc4_float -Wl,--no-whole-archive 
 LDFLAGS  = -Wl,-Map=test.map  -Wl,-Tmc12101-nmpu0.lds
 LDFLAGSD = -Wl,-Map=testd.map -Wl,-Tmc12101-nmpu0.lds 
-INC_DIRS = -I"$(MC12101)/include" -I../../../include -I..
+INC_DIRS = -I"$(MC12101)/include" -I../../include -I..
 LIB_DIRS = -L"$(MC12101)/lib"  
-SOURCES  = ../step4.S
+SOURCES  = ../main.cpp ../Encode.S ../Encode1.S
 
 .DEFAULT_GOAL := all
 
@@ -41,7 +41,7 @@ rund: $(TARGETD)
 	mc12101run -p -R -a0 -v $(TARGETD) 
 
 monitor:
-	nm_gdb_monitor_mc12101 0 0 5555
+	mc12101_gdb_monitor 0 0 5555
 	
 gdb:
 	nmc-gdb -ex "target remote :5555" $(TARGETD)

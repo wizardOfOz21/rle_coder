@@ -1,4 +1,4 @@
-#include "printx.hs"
+// #include "printx.hs"
 
 .global _Encode // объявление метки с именем подпрограммы.
 .text
@@ -24,19 +24,21 @@ _Encode:
 
     gr4 = ar0;
     gr3 - gr4;
+
+    //gr4=false;
     for:
         if <= goto endfor;
             gr4 = [ar0];
             ar0--;
             gr7 = [ar0++];
             gr4 - gr7;
-            if =0 goto iter;
+            if =0 goto iter ;//with gr1 - gr4 + 1;
             gr4 = 1;
             gr1 - gr4;
             if <>0 goto endif1 with gr2;
-                gr2++;
-                gr1 = 0;
-                goto iter;
+            gr2++;
+            gr1 = 0;
+            goto iter;
             endif1:
 
             if =0 goto endif2;
