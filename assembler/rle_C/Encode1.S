@@ -1,4 +1,5 @@
 #include "printx.hs"
+#include "macro.h"
 
 .global _Encode1
 .text
@@ -47,21 +48,23 @@ _Encode1:
             gr4 = - gr2;
             [ar1++] = gr4;
             ///векторное копирование?
-            gr2--;
-            for1:
-            if > delayed goto for1 with gr2--;
-                gr4 = [ar4++];
-                [ar1++] = gr4;
+            // gr2--;
+            // for1:
+            // if > delayed goto for1 with gr2--;
+            //     gr4 = [ar4++];
+            //     [ar1++] = gr4;
+            FPU_COPY(1)
             goto end;
         end_while1:
 
         gr4 = - gr2;
-        [ar1++] = gr4 with gr2--;
+        [ar1++] = gr4 /*with gr2--*/;
         ///векторное копирование?
-        for2:
-        if > delayed goto for2 with gr2--;
-            gr4 = [ar4++];
-            [ar1++] = gr4;
+        // for2:
+        // if > delayed goto for2 with gr2--;
+        //     gr4 = [ar4++];
+        //     [ar1++] = gr4;
+        FPU_COPY(2)
     endif1:
 
     gr7 = [ar0++] with gr2 = gr2 - gr2;
@@ -102,12 +105,12 @@ _Encode1:
         end_while_with_eof2:
             gr2++;
             gr4 = - gr2;
-            [ar1++] = gr4 with gr2--;
-            ///векторное копирование?
-            for3:
-            if > delayed goto for3 with gr2--;
-                gr4 = [ar4++];
-                [ar1++] = gr4;
+            [ar1++] = gr4 /*with gr2--*/;
+            // for3:
+            // if > delayed goto for3 with gr2--;
+            //     gr4 = [ar4++];
+            //     [ar1++] = gr4;
+            FPU_COPY(3)
             goto end;
         end_while2:
 
@@ -116,16 +119,16 @@ _Encode1:
             nul;
         [ar1++] = gr4;
 
-        ///векторное копирование?
+        FPU_COPY(4)
         
-        gr2;
-        if =0 goto while_true_;
+        // gr2;
+        // if =0 goto while_true_;
 
-        gr2--;
-        for4:
-        if > delayed goto for4 with gr2--;
-            gr4 = [ar4++];
-            [ar1++] = gr4;
+        // gr2--;
+        // for4:
+        // if > delayed goto for4 with gr2--;
+        //     gr4 = [ar4++];
+        //     [ar1++] = gr4;
 
     while_true_:
         gr7 = [ar0++];
